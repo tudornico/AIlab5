@@ -17,6 +17,7 @@ def save_models(epoch, model):
     print("Checkpoint saved!")
 
 
+
 def test(model, test_loader, cuda_avail):
     model.eval()
     test_accuracy = 0.0
@@ -52,19 +53,26 @@ def adjust_learning_rate(epoch, optimizer):
 
 
 def train_all():
-    faces_train_path = "./dataset/train/faces"
-    no_faces_train_path = "./dataset/train/no_faces"
-    faces_test_path = "./dataset/test/faces"
-    no_faces_test_path = "./dataset/test/no_faces"
+    faces_train_path = "./Training-Faces"
+    no_faces_train_path = "./natural_images"
+    faces_test_path = "./person"
+    no_faces_test_path = "./flower"
+    faces_train_path_amalia = "./Training-Faces-Amalia"
+    faces_train_path_coco = "./Training-Faces-Coco"
+    faces_train_path_nico = "./Training-Faces-Nico"
+    amalia_face_train = load_images(faces_train_path_amalia)
+    # create labels for training
 
     batch_size = 32
-    images_train, classes_train = load_images(faces=faces_train_path, no_faces=no_faces_train_path)
-    train_set = ImageClassifierDataset(image_list=images_train, image_classes=classes_train)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=4)
+    images_train, labels_train = load_images(ama_faces=faces_train_path_amalia,coco_faces=faces_train_path_coco,nico_faces=faces_train_path_nico,no_faces=no_faces_train_path)
+    #todo create the paths for the testing faces
+    images_test, labels_test = load_images(ama_faces=faces_test_path,coco_faces=faces_test_path,nico_faces=faces_test_path,no_faces=no_faces_test_path)
 
-    images_test, classes_test = load_images(faces=faces_test_path, no_faces=no_faces_test_path)
-    test_set = ImageClassifierDataset(image_list=images_test, image_classes=classes_test)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=4)
+    train_dataset = ImageClassifierDataset(images_train, labels_train)
+    test_dataset = ImageClassifierDataset(images_test, labels_test)
+
+    train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
 
     cuda_avail = torch.cuda.is_available()
 
@@ -109,7 +117,7 @@ def train(num_epochs, model, loss_function, optimizer, cuda_avail, train_loader,
 
 
 def test_on_image(path):
-    model_name = "./cifar10model_8.model"
+    model_name = "./cifar10model_0.model"
     test_transformations = transforms.Compose([
             transforms.Resize(32), transforms.CenterCrop(32), transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -131,6 +139,9 @@ def test_on_image(path):
 
 
 if __name__ == "__main__":
+   # model trained
     while True:
         filename = input("filepath:\n>")
         test_on_image(filename)
+
+
