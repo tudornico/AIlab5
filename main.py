@@ -4,7 +4,7 @@ from PIL import Image
 from torch.utils.data import DataLoader
 from torch.optim import Adam
 from torch.autograd import Variable
-from torchvision import transforms
+from torchvision import transforms, models
 
 import Trainer
 from ImagineClassifierDataset import ImageClassifierDataset
@@ -15,7 +15,6 @@ from network import SimpleNetwork
 def save_models(epoch, model):
     torch.save(model.state_dict(), f"cifar10model_{epoch}.model")
     print("Checkpoint saved!")
-
 
 
 def test(model, test_loader, cuda_avail):
@@ -64,9 +63,11 @@ def train_all():
     # create labels for training
 
     batch_size = 32
-    images_train, labels_train = load_images(ama_faces=faces_train_path_amalia,coco_faces=faces_train_path_coco,nico_faces=faces_train_path_nico,no_faces=no_faces_train_path)
-    #todo create the paths for the testing faces
-    images_test, labels_test = load_images(ama_faces=faces_test_path,coco_faces=faces_test_path,nico_faces=faces_test_path,no_faces=no_faces_test_path)
+    images_train, labels_train = load_images(ama_faces=faces_train_path_amalia, coco_faces=faces_train_path_coco,
+                                             nico_faces=faces_train_path_nico, no_faces=no_faces_train_path)
+    # todo create the paths for the testing faces
+    images_test, labels_test = load_images(ama_faces=faces_test_path, coco_faces=faces_test_path,
+                                           nico_faces=faces_test_path, no_faces=no_faces_test_path)
 
     train_dataset = ImageClassifierDataset(images_train, labels_train)
     test_dataset = ImageClassifierDataset(images_test, labels_test)
@@ -76,13 +77,14 @@ def train_all():
 
     cuda_avail = torch.cuda.is_available()
 
-    model = SimpleNetwork(num_classes=2)
+    # use a Resnet18 model
+    model = models.resnet18(pretrained=False)
     if cuda_avail:
         model.cuda()
 
     optimizer = Adam(model.parameters(), lr=0.01, weight_decay=0.0001)
     loss_fn = nn.CrossEntropyLoss()
-    train(num_epochs=1000, model=model, loss_function=loss_fn, optimizer=optimizer, cuda_avail=cuda_avail,
+    train(num_epochs=100, model=model, loss_function=loss_fn, optimizer=optimizer, cuda_avail=cuda_avail,
           train_loader=train_loader, test_loader=test_loader)
 
 
@@ -113,14 +115,15 @@ def train(num_epochs, model, loss_function, optimizer, cuda_avail, train_loader,
         if test_accuracy > best_acc:
             save_models(epoch=epoch, model=model)
             best_acc = test_accuracy
-        print(f"Epoch {epoch}, Train Accuracy: {train_accuracy}, Train Loss: {train_loss}, Test Accuracy: {test_accuracy}")
+        print(
+            f"Epoch {epoch}, Train Accuracy: {train_accuracy}, Train Loss: {train_loss}, Test Accuracy: {test_accuracy}")
 
 
 def test_on_image(path):
     model_name = "./cifar10model_0.model"
     test_transformations = transforms.Compose([
-            transforms.Resize(32), transforms.CenterCrop(32), transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        transforms.Resize(32), transforms.CenterCrop(32), transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     image = Image.open(path).convert('RGB')
     image = test_transformations(image)
     image = Variable(image.unsqueeze(0))
@@ -139,9 +142,7 @@ def test_on_image(path):
 
 
 if __name__ == "__main__":
-   # model trained
+    # model trained
     while True:
         filename = input("filepath:\n>")
         test_on_image(filename)
-
-

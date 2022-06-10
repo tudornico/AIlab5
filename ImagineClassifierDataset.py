@@ -9,7 +9,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 class ImageClassifierDataset(Dataset):
     def __init__(self, image_list, image_classes):
         self.images = []
-        self.labels = ['amalia', 'coco', 'nico','no_face']
+        self.labels = []
         self.classes = list(set(image_classes))
         self.class_to_label = {c: i for i, c in enumerate(self.classes)}
         self.image_size = 32

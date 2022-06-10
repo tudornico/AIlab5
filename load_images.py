@@ -22,8 +22,5 @@ def load_images(ama_faces,coco_faces,nico_faces, no_faces):
         if path.is_file():
             images.append(Image.open(path).convert('RGB'))
             classes.append('nico')
-    for path in pathlib.Path(no_faces).iterdir():
-        if path.is_file():
-            images.append(Image.open(path).convert('RGB'))
-            classes.append('no faces')
+
     return images, classes
