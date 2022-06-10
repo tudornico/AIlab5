@@ -52,22 +52,22 @@ def adjust_learning_rate(epoch, optimizer):
 
 
 def train_all():
-    faces_train_path = "./Training-Faces"
-    no_faces_train_path = "./natural_images"
-    faces_test_path = "./person"
-    no_faces_test_path = "./flower"
-    faces_train_path_amalia = "./Training-Faces-Amalia"
-    faces_train_path_coco = "./Training-Faces-Coco"
-    faces_train_path_nico = "./Training-Faces-Nico"
+
+    faces_train_path_amalia = "./Amalia"
+    faces_train_path_coco = "./Coco"
+    faces_train_path_nico = "./Nico"
+    faces_test_path_ama = "./AmaliaTest"
+    faces_test_path_coco = "./CocoTest"
+    faces_test_path_nico = "./NicoTest"
     amalia_face_train = load_images(faces_train_path_amalia)
     # create labels for training
 
     batch_size = 32
     images_train, labels_train = load_images(ama_faces=faces_train_path_amalia, coco_faces=faces_train_path_coco,
-                                             nico_faces=faces_train_path_nico, no_faces=no_faces_train_path)
+                                             nico_faces=faces_train_path_nico)
     # todo create the paths for the testing faces
-    images_test, labels_test = load_images(ama_faces=faces_test_path, coco_faces=faces_test_path,
-                                           nico_faces=faces_test_path, no_faces=no_faces_test_path)
+    images_test, labels_test = load_images(ama_faces=faces_test_path_ama, coco_faces=faces_test_path_coco,
+                                           nico_faces=faces_test_path_nico)
 
     train_dataset = ImageClassifierDataset(images_train, labels_train)
     test_dataset = ImageClassifierDataset(images_test, labels_test)

@@ -4,7 +4,7 @@ from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-def load_images(ama_faces,coco_faces,nico_faces, no_faces):
+def load_images(ama_faces,coco_faces,nico_faces):
     images = []
     classes = []
 
