@@ -53,19 +53,19 @@ def adjust_learning_rate(epoch, optimizer):
 
 def train_all():
 
-    faces_train_path_amalia = "./Amalia"
+    faces_train_path_amalia = "./Ama"
     faces_train_path_coco = "./Coco"
     faces_train_path_nico = "./Nico"
-    faces_test_path_ama = "./AmaliaTest"
+    faces_test_path_ama = "./AmaTest"
     faces_test_path_coco = "./CocoTest"
     faces_test_path_nico = "./NicoTest"
-    amalia_face_train = load_images(faces_train_path_amalia)
+
     # create labels for training
 
     batch_size = 32
     images_train, labels_train = load_images(ama_faces=faces_train_path_amalia, coco_faces=faces_train_path_coco,
                                              nico_faces=faces_train_path_nico)
-    # todo create the paths for the testing faces
+
     images_test, labels_test = load_images(ama_faces=faces_test_path_ama, coco_faces=faces_test_path_coco,
                                            nico_faces=faces_test_path_nico)
 
@@ -120,7 +120,7 @@ def train(num_epochs, model, loss_function, optimizer, cuda_avail, train_loader,
 
 
 def test_on_image(path):
-    model_name = "./cifar10model_0.model"
+    model_name = "./cifar10model_3.model"
     test_transformations = transforms.Compose([
         transforms.Resize(32), transforms.CenterCrop(32), transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -128,21 +128,26 @@ def test_on_image(path):
     image = test_transformations(image)
     image = Variable(image.unsqueeze(0))
 
-    model = SimpleNetwork()
+    model = models.resnet18(pretrained=True)
     model.load_state_dict(torch.load(model_name))
     model.eval()
 
     output = model(image)
     _, prediction = torch.max(output.data, 1)
     result = prediction[0].item()
-    if result:
-        print("Face found")
+    if( result):
+        print(f"The image is a {result}")
     else:
-        print("No face found")
+        print("No known face")
+    # print the labels of the image
+
 
 
 if __name__ == "__main__":
-    # model trained
-    while True:
-        filename = input("filepath:\n>")
-        test_on_image(filename)
+    #load model cifar10model_12.model
+
+     while True:
+         filename = input("filepath:\n>")
+         image = Image.open(filename)
+         image.show()
+         test_on_image(filename)
