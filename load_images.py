@@ -12,20 +12,23 @@ def load_images(ama_faces,coco_faces,nico_faces):
 
     for path in pathlib.Path(ama_faces).iterdir():
         if path.is_file():
-            Image.open(path).resize((32,32))
-            images.append(Image.open(path).convert('RGB'))
+            image = Image.open(path)
+            image.thumbnail((150, 150))
+            images.append(image.convert('RGB'))
             classes.append('ama')
 
     for path in pathlib.Path(coco_faces).iterdir():
         if path.is_file():
-            Image.open(path).resize((32, 32))
-            images.append(Image.open(path).convert('RGB'))
+            image = Image.open(path)
+            image.thumbnail((150, 150))
+            images.append(image.convert('RGB'))
             classes.append('coco')
 
     for path in pathlib.Path(nico_faces).iterdir():
         if path.is_file():
-            Image.open(path).resize((32, 32))
-            images.append(Image.open(path).convert('RGB'))
+            image = Image.open(path)
+            image.thumbnail((150, 150))
+            images.append(image.convert('RGB'))
             classes.append('nico')
 
     return images, classes
